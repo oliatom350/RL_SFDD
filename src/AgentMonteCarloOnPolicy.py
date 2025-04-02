@@ -1,7 +1,7 @@
 import numpy as np
 import gymnasium as gym
 
-class AgentMonteCarlo:
+class AgentMonteCarloOnPolicy:
     def __init__(self, env: gym.Env, num_episodes=5000, gamma=1.0, epsilon=0.1):
         self.env = env
         self.num_episodes = num_episodes
