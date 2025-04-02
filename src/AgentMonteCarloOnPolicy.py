@@ -44,15 +44,15 @@ class AgentMonteCarloOnPolicy:
     def train(self):
         """ Entrena al agente con Monte Carlo """
         for episode in range(self.num_episodes):
-            state, _ = self.env.reset()
+            obs, _ = self.env.reset()
             self.episode_data = []
             done = False
             
             while not done:
-                action = self.get_action(state)
-                next_state, reward, terminated, truncated, _ = self.env.step(action)
-                self.update(state, action, next_state, reward, terminated, truncated, None)
-                state = next_state
+                action = self.get_action(obs)
+                next_obs, reward, terminated, truncated, info = self.env.step(action)
+                self.update(obs, action, next_obs, reward, terminated, truncated, info)
+                obs = next_obs
                 done = terminated or truncated
         
     def stats(self):
