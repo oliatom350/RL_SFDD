@@ -6,6 +6,7 @@ class AgentMonteCarloOnPolicy:
     def __init__(self, env, num_episodes=100000, gamma=0.95, initial_epsilon=1.0, min_epsilon=0.01, seed=42):
         self.env = env
         self.num_episodes = num_episodes
+        self.episode_lengths = []
         self.gamma = gamma
         self.initial_epsilon = initial_epsilon
         self.epsilon = initial_epsilon
@@ -25,7 +26,7 @@ class AgentMonteCarloOnPolicy:
         
         np.random.seed(seed)
         self.env.reset(seed=seed)
-    
+
     def get_epsilon_greedy_action(self, state):
         if np.random.random() < self.epsilon:
             return self.env.action_space.sample()  # Random action
@@ -43,12 +44,18 @@ class AgentMonteCarloOnPolicy:
             state, _ = self.env.reset()
             done = False
             
+            # Counter for episode length
+            steps = 0
             while not done:
                 action = self.get_epsilon_greedy_action(state)
                 next_state, reward, terminated, truncated, _ = self.env.step(action)
                 done = terminated or truncated
                 episode_history.append((state, action, reward))
                 state = next_state
+                steps += 1
+
+            # Store episode length
+            self.episode_lengths.append(steps)
             
             # Check if episode was successful
             if reward > 0:
