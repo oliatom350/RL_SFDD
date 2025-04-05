@@ -28,6 +28,9 @@ class AgentMonteCarloOffPolicy:
 
     def target_policy(self, state):
         return np.argmax(self.Q[state])
+    
+    def get_optimal_policy(self):
+        return np.argmax(self.Q, axis=1)
 
     def train(self):
         for episode in tqdm(range(self.num_episodes), desc="Training (Off-Policy)"):
