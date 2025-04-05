@@ -1,20 +1,12 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import random
+import sys
+sys.path.append('src/')
+from QNet import DQN_Network
 
-class QNetwork(nn.Module):
-    def __init__(self, state_dim, action_dim):
-        super(QNetwork, self).__init__()
-        self.fc = nn.Sequential(
-            nn.Linear(state_dim, 64),
-            nn.ReLU(),
-            nn.Linear(64, action_dim)
-        )
-
-    def forward(self, x):
-        return self.fc(x)
-
-class DQNAgent:
+class AgentDQLearning:
     def __init__(self, state_dim, action_dim, gamma=0.99, lr=1e-3, epsilon=1.0, min_epsilon=0.01, decay=0.995):
         self.state_dim = state_dim
         self.action_dim = action_dim
@@ -23,7 +15,7 @@ class DQNAgent:
         self.min_epsilon = min_epsilon
         self.decay = decay
 
-        self.q_net = QNetwork(state_dim, action_dim)
+        self.q_net = DQN_Network(state_dim, action_dim)
         self.optimizer = optim.Adam(self.q_net.parameters(), lr=lr)
         self.criterion = nn.MSELoss()
 
