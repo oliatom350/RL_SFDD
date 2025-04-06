@@ -28,13 +28,13 @@ class DQN_Network(nn.Module):
                 if isinstance(module, nn.Linear):
                     nn.init.kaiming_uniform_(module.weight, nonlinearity='relu')
 
-def forward(self, x):
-    """
-    Propagación hacia adelante de la red para calcular los valores Q.
-    Parámetros:
-    x (torch.Tensor): Estado de entrada representado como tensor.
-    Retorna:
-    Q (torch.Tensor): Valores Q para cada acción posible.
-    """
-    Q = self.FC(x) # Pasa el estado a través de la red neuronal
-    return Q
+    def forward(self, x):
+        """
+        Propagación hacia adelante de la red para calcular los valores Q.
+        Parámetros:
+        x (torch.Tensor): Estado de entrada representado como tensor.
+        Retorna:
+        Q (torch.Tensor): Valores Q para cada acción posible.
+        """
+        Q = self.FC(x) # Pasa el estado a través de la red neuronal
+        return Q
