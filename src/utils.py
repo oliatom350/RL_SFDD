@@ -1,29 +1,5 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import gymnasium as gym
-
-
-##############################################
-##########    PLOT FUNCTIONS    ##############
-##############################################
-
-def plot(list_stats):
-  # Creamos una lista de índices para el eje x
-  indices = list(range(len(list_stats)))
-
-  # Creamos el gráfico
-  plt.figure(figsize=(6, 3))
-  plt.plot(indices, list_stats)
-
-  # Añadimos título y etiquetas
-  plt.title('Proporción de recompensas')
-  plt.xlabel('Episodio')
-  plt.ylabel('Proporción')
-
-  # Mostramos el gráfico
-  plt.grid(True)
-  plt.show()
-
 
 def get_moving_avgs(arr, window, convolution_mode):
     return np.convolve(
@@ -31,46 +7,6 @@ def get_moving_avgs(arr, window, convolution_mode):
         np.ones(window),
         mode=convolution_mode
     ) / window
-
-
-def plot_episode_rewards(envs, rolling_length = 500):
-    plt.figure(figsize=(30, 10))
-    for name, env in envs:
-        reward_moving_average = get_moving_avgs(
-            env.return_queue,
-            rolling_length,
-            "valid"
-        )
-        plt.plot(range(len(reward_moving_average)), reward_moving_average, label=name)
-    plt.xlabel("Episodio")
-    plt.ylabel("Recompensa")
-    plt.title("Evolución de la recompensa de los Episodios")
-    plt.grid(True)
-    plt.legend()
-    plt.show()
-
-
-def plot_episode_lengths(envs, rolling_length = 500):
-    plt.figure(figsize=(30, 10))
-    for name, env in envs:
-        length_moving_average = get_moving_avgs(
-            env.length_queue,
-            rolling_length,
-            "valid"
-        )
-        plt.plot(range(len(length_moving_average)), length_moving_average, label=name)
-    plt.xlabel("Episodio")
-    plt.ylabel("Recompensa")
-    plt.title("Evolución de la recompensa de los Episodios")
-    plt.grid(True)
-    plt.legend()
-    plt.show()
-
-
-
-##############################################
-###########    GYM FUNCTIONS    ##############
-##############################################
 
 def make_env(env_name, **kwargs):
     """
