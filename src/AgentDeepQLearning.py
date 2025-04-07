@@ -7,25 +7,32 @@ from collections import Counter
 from QNet import DQN_Network
 
 class AgentDQLearning:
-    def __init__(self, state_dim, action_dim, gamma=0.99, lr=1e-3,
-                 epsilon=1.0, min_epsilon=0.01, decay=0.995):
-        self.state_dim = state_dim
-        self.action_dim = action_dim
+    def __init__(self, env, gamma=0.99, lr=1e-3, epsilon=1.0, min_epsilon=0.01, decay=0.995, seed=42):
+        self.env = env
         self.gamma = gamma
         self.epsilon = epsilon
         self.min_epsilon = min_epsilon
         self.decay = decay
 
+        self.state_dim = env.observation_space.shape[0]
+        self.action_dim = env.action_space.n
+
         # Red neuronal para estimar la Q-función
-        self.q_net = DQN_Network(action_dim, state_dim)  # ¡OJO!: orden correcto
+        self.q_net = DQN_Network(self.action_dim, self.state_dim)
         self.optimizer = optim.Adam(self.q_net.parameters(), lr=lr)
         self.criterion = nn.MSELoss()
 
+        np.random.seed(seed)
+        np.random.default_rng(seed)
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed(seed)
+        self.env.reset(seed=seed)
 
     def get_action(self, state):
         """Política epsilon-greedy para seleccionar una acción."""
-        if random.random() < self.epsilon:
-            return random.randint(0, self.action_dim - 1)
+        if np.random.random() < self.epsilon:
+            return np.random.randint(0, self.action_dim - 1)
         with torch.no_grad():
             state_tensor = torch.FloatTensor(state)
             q_values = self.q_net(state_tensor)
@@ -84,11 +91,6 @@ class AgentDQLearning:
                 episode_pole_angles.append(state[2])      # ángulo del poste
 
                 self.update(state, action, reward, next_state, done)
-
-                # # Guardar variables de estabilidad
-                # cart_pos, _, pole_ang, _ = state
-                # cart_positions.append(cart_pos)
-                # pole_angles.append(pole_ang)
 
                 state = next_state
                 total_reward += reward

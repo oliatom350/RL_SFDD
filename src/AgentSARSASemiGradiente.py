@@ -2,13 +2,18 @@ import numpy as np
 from collections import Counter
 
 class AgentSARSASemiGradiente:
-    def __init__(self, state_dim, action_dim, alpha=0.01, gamma=0.99, epsilon=0.1):
+    def __init__(self, env, alpha=0.01, gamma=0.99, epsilon=0.1, seed=42):
+        self.env = env
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
-        self.state_dim = state_dim
-        self.action_dim = action_dim
-        self.weights = np.zeros((action_dim, state_dim))
+        self.state_dim = env.observation_space.shape[0]
+        self.action_dim = env.action_space.n
+        self.weights = np.zeros((self.action_dim, self.state_dim))
+
+        np.random.seed(seed)
+        np.random.default_rng(seed)
+        self.env.reset(seed=seed)
 
     def get_action(self, state):
         if np.random.rand() < self.epsilon:
@@ -54,11 +59,6 @@ class AgentSARSASemiGradiente:
                 next_action = self.get_action(next_state)
                 action_counts[action] += 1
                 self.update(state, action, reward, next_state, next_action)
-
-                # # Guardar variables de estabilidad
-                # cart_pos, _, pole_ang, _ = state
-                # cart_positions.append(cart_pos)
-                # pole_angles.append(pole_ang)
 
                 state = next_state
                 action = next_action
