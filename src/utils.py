@@ -32,6 +32,7 @@ def get_moving_avgs(arr, window, convolution_mode):
         mode=convolution_mode
     ) / window
 
+
 def plot_episode_rewards(envs, rolling_length = 500):
     plt.figure(figsize=(30, 10))
     for name, env in envs:
@@ -47,6 +48,7 @@ def plot_episode_rewards(envs, rolling_length = 500):
     plt.grid(True)
     plt.legend()
     plt.show()
+
 
 def plot_episode_lengths(envs, rolling_length = 500):
     plt.figure(figsize=(30, 10))
@@ -64,17 +66,6 @@ def plot_episode_lengths(envs, rolling_length = 500):
     plt.legend()
     plt.show()
 
-
-def plot_episode_lengths(episode_lengths):
-    """Grafica la longitud de los episodios a lo largo del tiempo."""
-    plt.figure(figsize=(30, 10))
-    plt.plot(range(len(episode_lengths)), episode_lengths, label="Longitud del episodio")
-    plt.xlabel("Episodio")
-    plt.ylabel("Longitud")
-    plt.title("Evolución de la Longitud de los Episodios")
-    plt.grid(True)
-    plt.legend()
-    plt.show()
 
 
 ##############################################

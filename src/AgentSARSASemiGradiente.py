@@ -1,4 +1,5 @@
 import numpy as np
+from collections import Counter
 
 class AgentSARSASemiGradiente:
     def __init__(self, state_dim, action_dim, alpha=0.01, gamma=0.99, epsilon=0.1):
@@ -25,6 +26,9 @@ class AgentSARSASemiGradiente:
     def train(self, env, n_episodes=500):
         rewards = []
         lengths = []
+        pole_angles = {}
+        cart_positions = {}
+        action_counts = Counter()
 
         for ep in range(n_episodes):
             state, _ = env.reset()
@@ -34,14 +38,27 @@ class AgentSARSASemiGradiente:
             steps = 0
 
             action = self.get_action(state)
+            action_counts[action] += 1
+            episode_pole_angles = []
+            episode_cart_positions = []
 
             while not done:
                 next_state, reward, terminated, truncated, _ = env.step(action)
                 done = terminated or truncated
                 next_state = np.array(next_state, dtype=np.float32)
 
+                # Guardamos valores por paso
+                episode_cart_positions.append(state[0])   # posición del carrito
+                episode_pole_angles.append(state[2])      # ángulo del poste
+
                 next_action = self.get_action(next_state)
+                action_counts[action] += 1
                 self.update(state, action, reward, next_state, next_action)
+
+                # # Guardar variables de estabilidad
+                # cart_pos, _, pole_ang, _ = state
+                # cart_positions.append(cart_pos)
+                # pole_angles.append(pole_ang)
 
                 state = next_state
                 action = next_action
@@ -50,5 +67,7 @@ class AgentSARSASemiGradiente:
 
             rewards.append(total_reward)
             lengths.append(steps)
+            cart_positions[ep] = episode_cart_positions
+            pole_angles[ep] = episode_pole_angles
 
-        return rewards, lengths
+        return rewards, lengths, action_counts, pole_angles, cart_positions
